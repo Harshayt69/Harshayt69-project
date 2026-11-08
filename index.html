@@ -1,61 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About:Blank Embedder</title>
+    <title>About Blank Embedder</title>
 </head>
 <body>
 
-<button id="embedButton">embed about:blank</button>
+<button id="embed">embed about:blank</button>
 
 <script>
-    // Ask for the URL when the page opens
-    const enteredUrl = prompt("url?");
-    let targetUrl = null;
+let website = "";
 
-    if (enteredUrl && enteredUrl.trim()) {
-        try {
-            const parsedUrl = new URL(enteredUrl.trim());
+document.getElementById("embed").onclick = function() {
+    const url = prompt("url?");
 
-            if (parsedUrl.protocol === "https:" ||
-                parsedUrl.protocol === "http:") {
-                targetUrl = parsedUrl.href;
-            } else {
-                alert("Enter a URL starting with https:// or http://");
-            }
-        } catch {
-            alert("Please enter a valid URL.");
+    if (!url) return;
+
+    try {
+        const parsed = new URL(url);
+
+        if (!["https:", "http:"].includes(parsed.protocol)) {
+            alert("Enter a valid website URL.");
+            return;
         }
+
+        website = parsed.href;
+        alert("URL saved! Click Embed about:blank again to open it.");
+    } catch {
+        alert("Enter a valid URL including https://");
     }
-
-    document.getElementById("embedButton").onclick = function () {
-        if (!targetUrl) {
-            alert("Reload the page and enter a valid URL.");
-            return;
-        }
-
-        const win = window.open("about:blank", "_blank");
-
-        if (!win) {
-            alert("Pop-up blocked. Allow pop-ups and try again.");
-            return;
-        }
-
-        win.document.title = " ";
-        win.document.body.style.margin = "0";
-        win.document.body.style.height = "100vh";
-
-        const iframe = win.document.createElement("iframe");
-
-        iframe.src = targetUrl;
-        iframe.style.border = "none";
-        iframe.style.width = "100%";
-        iframe.style.height = "100%";
-        iframe.style.margin = "0";
-
-        win.document.body.appendChild(iframe);
-    };
+};
 </script>
 
 </body>
